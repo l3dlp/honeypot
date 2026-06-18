@@ -1,0 +1,12 @@
+[Unit]
+Description=honeypot
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5s
+ExecStart=/honeypot/honeypot
+
+[Install]
+WantedBy=multi-user.target
+
