@@ -1,27 +1,28 @@
-# HONEYPOT: THE TRUTH TRAP
+# honeypot
 
-Welcome to the filthy underbelly of the internet, you voyeuristic bastards! What you're looking at is a HONEYPOT - that's right, a digital Venus flytrap for the technically curious and morally flexible.
+An old trick. Real SSH on port 22 just attracts noise — bots, scanners, the
+usual midnight traffic. So put something on port 22 that isn't a shell.
 
-## WHAT THE HELL IS THIS?
+This is a tiny SSH server that accepts any connection, writes a single line, and
+hangs up. No auth prompt, no shell, nothing to brute-force. Whoever knocks gets
+a message and a closed door.
 
-This abomination of code is a simple SSH server that does ABSOLUTELY NOTHING except spit out a recruitment message for the corporate overlords at Datamix. That's right - we're using one of the most fundamental security protocols to ADVERTISE. The City would be proud.
-
-## HOW TO USE THIS DIGITAL GARBAGE
+## Run
 
 ```
 go run main.go
 ```
 
-Then sit back in your ergonomic chair and watch as unsuspecting SSH connections get greeted with the digital equivalent of a subway advertisement. It's running on port 22 because SUBTLETY IS DEAD.
+Port 22 needs root. The line it prints comes from `HONEYPOT_EMAIL` in a `.env`
+file — copy `.env.example` to `.env` and set your address before you start.
 
-## THE TRUTH
+## How it holds up
 
-This is what the internet has become - a cesspool where even the protocols designed for security are now just another billboard. Every port a potential advertisement, every connection a chance to SELL SELL SELL.
+Built to sit untouched on a box for a long time:
 
-Want to join Datamix? Of course you do. Send an email to ping@datamix.io and tell them Spider sent you. They won't know what the hell you're talking about, and THAT'S THE POINT.
+- one token bucket per source IP, so a single host can't flood it
+- pairs with a `fail2ban` jail (`honeypot-ssh`) for repeat offenders
+- connections logged to `/var/log/honeypot.log`
 
-## DISCLAIMER
-
-If you're running this on a production server, you're either a genius or an idiot. I'm betting on the latter. Port 22 requires root privileges, you filthy animal.
-
-THE TRUTH WILL SET YOU FREE, BUT FIRST IT WILL PISS YOU OFF.
+Nothing exciting happens, which is the point. You move the real SSH to another
+port, leave this one running, and forget about it for a few years.

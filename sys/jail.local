@@ -1,0 +1,11 @@
+# simply add:
+
+[honeypot-ssh]
+enabled  = true
+port     = 22
+filter   = honeypot
+logpath  = /var/log/honeypot.log
+maxretry = 1
+bantime  = 1w
+banaction = ufw
+

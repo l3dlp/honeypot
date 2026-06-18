@@ -1,13 +1,16 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"net"
+	"os"
 	"sync"
 	"time"
 
 	"github.com/gliderlabs/ssh"
+	"github.com/joho/godotenv"
 	"github.com/l3dlp/logfile"
 	"golang.org/x/time/rate"
 )
@@ -46,6 +49,17 @@ func (l *IPRateLimiter) GetLimiter(ip string) *rate.Limiter {
 // Create a custom server that uses our rate limiter
 func main() {
 
+	// load configuration from .env (non-fatal if the file is absent)
+	if err := godotenv.Load(); err != nil {
+		log.Printf("No .env file loaded: %v", err)
+	}
+
+	// the recruitment contact address is configuration, not hardcoded
+	contactEmail := os.Getenv("HONEYPOT_EMAIL")
+	if contactEmail == "" {
+		log.Fatal("HONEYPOT_EMAIL is not set (define it in .env)")
+	}
+
 	// setting up log file
 	logFile := logfile.Use("/var/log/honeypot.log")
 	if logFile != nil {
@@ -77,7 +91,7 @@ func main() {
 		log.Printf("Connection from: %s", ip)
 		
 		// Normal response
-		io.WriteString(s, "\n\nWant to join a nice remote team?\nSend an e-mail to ping@datamix.io\n\n")
+		io.WriteString(s, fmt.Sprintf("\n\nWant to join a nice remote team?\nSend an e-mail to %s\n\n", contactEmail))
 	})
 
 	// Start server on port 22 (requires root privileges)
