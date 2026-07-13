@@ -7,6 +7,8 @@ This is a tiny SSH server that accepts any connection, writes a single line, and
 hangs up. No auth prompt, no shell, nothing to brute-force. Whoever knocks gets
 a message and a closed door.
 
+Using `ufw` for my own needs. Easily changed.
+
 ## Run
 
 ```
